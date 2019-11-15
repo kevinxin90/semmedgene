@@ -35,7 +35,8 @@ def load_data(data_folder):
             if _item[4] in group_by_semmantic_dict['gene'] or _item[4] in group_by_semmantic_dict['protein']:
                 if _item[4] not in gene_related:
                     gene_related[_item[4]] = {'_id': _item[4][5:],
-                                              'umls': _item[4][5:]}
+                                              'umls': _item[4][5:],
+                                              'name': id_type_mapping[_item[4]]['name']}
                 pred = _item[0].lower()
                 semantic_type = id_type_mapping[_item[5]]
                 if semantic_type != 'disease_or_phenotypic_feature':
@@ -47,7 +48,8 @@ def load_data(data_folder):
             elif _item[5] in group_by_semmantic_dict['gene'] or _item[5] in group_by_semmantic_dict['protein']:
                 if _item[5] not in gene_related:
                     gene_related[_item[5]] = {'_id': _item[5][5:],
-                                              'umls': _item[5][5:]}
+                                              'umls': _item[5][5:],
+                                              'name': id_type_mapping[_item[5]]['name']}
                 pred = _item[0].lower() + '_reverse'
                 semantic_type = id_type_mapping[_item[4]]
                 if semantic_type != 'disease_or_phenotypic_feature':

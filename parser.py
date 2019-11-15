@@ -1,6 +1,19 @@
 from collections import defaultdict
 import csv
 import os
+import sys
+
+maxInt = sys.maxsize
+
+while True:
+    # decrease the maxInt value by factor 10 
+    # as long as the OverflowError occurs.
+
+    try:
+        csv.field_size_limit(maxInt)
+        break
+    except OverflowError:
+        maxInt = int(maxInt/10)
 
 
 def load_data(data_folder):

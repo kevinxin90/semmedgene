@@ -40,15 +40,14 @@ def load_data(data_folder):
                                               'name': id_type_mapping[_item[4]]['name']}
                 pred = _item[0].lower()
                 semantic_type = id_type_mapping[_item[5]]['type']
-                if semantic_type != 'disease_or_phenotypic_feature':
-                    if pred not in gene_related[_item[4]]:
-                        gene_related[_item[4]][pred] = {}
-                    if semantic_type not in gene_related[_item[4]][pred]:
-                        gene_related[_item[4]][pred][semantic_type] = []
-                    assoc = _item[4] + pred + str(_item[1]) + _item[5]
-                    if assoc not in unique_assocs:
-                        unique_assocs.add(assoc)
-                        gene_related[_item[4]][pred][semantic_type].append({'pmid': _item[1].split(';'), 'umls': _item[5][5:]})
+                if pred not in gene_related[_item[4]]:
+                    gene_related[_item[4]][pred] = {}
+                if semantic_type not in gene_related[_item[4]][pred]:
+                    gene_related[_item[4]][pred][semantic_type] = []
+                assoc = _item[4] + pred + str(_item[1]) + _item[5]
+                if assoc not in unique_assocs:
+                    unique_assocs.add(assoc)
+                    gene_related[_item[4]][pred][semantic_type].append({'pmid': _item[1].split(';'), 'umls': _item[5][5:]})
             elif _item[5] in group_by_semmantic_dict['gene'] or _item[5] in group_by_semmantic_dict['protein']:
                 if _item[5] not in gene_related:
                     gene_related[_item[5]] = {'_id': _item[5][5:],
@@ -56,14 +55,13 @@ def load_data(data_folder):
                                               'name': id_type_mapping[_item[5]]['name']}
                 pred = _item[0].lower() + '_reverse'
                 semantic_type = id_type_mapping[_item[4]]['type']
-                if semantic_type != 'disease_or_phenotypic_feature':
-                    if pred not in gene_related[_item[5]]:
-                        gene_related[_item[5]][pred] = {}
-                    if semantic_type not in gene_related[_item[5]][pred]:
-                        gene_related[_item[5]][pred][semantic_type] = []
-                    assoc = _item[5] + pred + str(_item[1]) + _item[4]
-                    if assoc not in unique_assocs:
-                        unique_assocs.add(assoc)
-                        gene_related[_item[5]][pred][semantic_type].append({'pmid': _item[1].split(';'), 'umls': _item[4][5:]})
+                if pred not in gene_related[_item[5]]:
+                    gene_related[_item[5]][pred] = {}
+                if semantic_type not in gene_related[_item[5]][pred]:
+                    gene_related[_item[5]][pred][semantic_type] = []
+                assoc = _item[5] + pred + str(_item[1]) + _item[4]
+                if assoc not in unique_assocs:
+                    unique_assocs.add(assoc)
+                    gene_related[_item[5]][pred][semantic_type].append({'pmid': _item[1].split(';'), 'umls': _item[4][5:]})
     for v in gene_related.values():
         yield v

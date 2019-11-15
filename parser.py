@@ -21,6 +21,7 @@ def load_data(data_folder):
     edges_path = os.path.join(data_folder, "edges_neo4j.csv")
     group_by_semmantic_dict = defaultdict(list)
     id_type_mapping = {}
+    unique_assocs = set()
     with open(nodes_path) as f:
         csv_reader = csv.reader(f, delimiter=',')
         next(csv_reader)
@@ -44,7 +45,10 @@ def load_data(data_folder):
                         gene_related[_item[4]][pred] = {}
                     if semantic_type not in gene_related[_item[4]][pred]:
                         gene_related[_item[4]][pred][semantic_type] = []
-                    gene_related[_item[4]][pred][semantic_type].append({'pmid': _item[1].split(';'), 'umls': _item[5][5:]})
+                    assoc = _item[4] + pred + str(_item[1]) + _item[5]
+                    if assoc not in unique_assocs:
+                        unique_assocs.add(assoc)
+                        gene_related[_item[4]][pred][semantic_type].append({'pmid': _item[1].split(';'), 'umls': _item[5][5:]})
             elif _item[5] in group_by_semmantic_dict['gene'] or _item[5] in group_by_semmantic_dict['protein']:
                 if _item[5] not in gene_related:
                     gene_related[_item[5]] = {'_id': _item[5][5:],
@@ -57,6 +61,9 @@ def load_data(data_folder):
                         gene_related[_item[5]][pred] = {}
                     if semantic_type not in gene_related[_item[5]][pred]:
                         gene_related[_item[5]][pred][semantic_type] = []
-                    gene_related[_item[5]][pred][semantic_type].append({'pmid': _item[1].split(';'), 'umls': _item[4][5:]})
+                    assoc = _item[5] + pred + str(_item[1]) + _item[4]
+                    if assoc not in unique_assocs:
+                        unique_assocs.add(assoc)
+                        gene_related[_item[5]][pred][semantic_type].append({'pmid': _item[1].split(';'), 'umls': _item[4][5:]})
     for v in gene_related.values():
         yield v

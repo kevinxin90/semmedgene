@@ -6,6 +6,23 @@ import sys
 maxInt = sys.maxsize
 
 DOC_TYPE = "GENE"
+
+SEMMED_SEMANTIC_TYPE_MAPPING = {
+    "chemical_substance": "ChemicalSubstance",
+    "activity_and_behavior": None,
+    "anatomical_entity": "AnatomicalEntity",
+    "biological_entity": None,
+    "biological_process_or_activity": "BiologicalProcess",
+    "cell": "Cell",
+    "cell_component": "CellularComponent",
+    "disease_or_phenotypic_feature": "DiseaseOrPhenotypicFeature",
+    "gene": "Gene",
+    "genomic_entity": None,
+    "gross_anatomical_structure": None,
+    "phenotypic_feature": "PhenotypicFeature",
+    "protein": "Gene"
+}
+
 SEMMED_PRED_MAPPING = {
     "ASSOCIATED_WITH": {
         "self": "related_to",
@@ -128,16 +145,17 @@ def load_data(data_folder):
                                               'name': id_type_mapping[_item[4]]['name'],
                                               "@type": DOC_TYPE}
                 pred = SEMMED_PRED_MAPPING[_item[0]]['self']
-                semantic_type = id_type_mapping[_item[5]]['type']
-                if pred not in gene_related[_item[4]]:
-                    gene_related[_item[4]][pred] = []
-                assoc = _item[4] + pred + str(_item[1]) + _item[5]
-                if assoc not in unique_assocs:
-                    unique_assocs.add(assoc)
-                    gene_related[_item[4]][pred].append({'pmid': _item[1].split(';'),
-                                                         'umls': _item[5][5:],
-                                                         'name': id_type_mapping[_item[5]]['name'],
-                                                         '@type': semantic_type})
+                semantic_type = SEMMED_SEMANTIC_TYPE_MAPPING[id_type_mapping[_item[5]]['type']]
+                if semantic_type:
+                    if pred not in gene_related[_item[4]]:
+                        gene_related[_item[4]][pred] = []
+                    assoc = _item[4] + pred + str(_item[1]) + _item[5]
+                    if assoc not in unique_assocs:
+                        unique_assocs.add(assoc)
+                        gene_related[_item[4]][pred].append({'pmid': _item[1].split(';'),
+                                                            'umls': _item[5][5:],
+                                                            'name': id_type_mapping[_item[5]]['name'],
+                                                            '@type': semantic_type})
             elif _item[5] in group_by_semmantic_dict['gene'] or _item[5] in group_by_semmantic_dict['protein']:
                 if _item[5] not in gene_related:
                     gene_related[_item[5]] = {'_id': _item[5][5:],
@@ -145,15 +163,16 @@ def load_data(data_folder):
                                               'name': id_type_mapping[_item[5]]['name'],
                                               "@type": DOC_TYPE}
                 pred = SEMMED_PRED_MAPPING[_item[0]]['reverse']
-                semantic_type = id_type_mapping[_item[4]]['type']
-                if pred not in gene_related[_item[5]]:
-                    gene_related[_item[5]][pred] = []
-                assoc = _item[5] + pred + str(_item[1]) + _item[4]
-                if assoc not in unique_assocs:
-                    unique_assocs.add(assoc)
-                    gene_related[_item[5]][pred].append({'pmid': _item[1].split(';'),
-                                                         'umls': _item[4][5:],
-                                                         'name': id_type_mapping[_item[4]]['name'],
-                                                         '@type': semantic_type})
+                semantic_type = SEMMED_SEMANTIC_TYPE_MAPPING[id_type_mapping[_item[4]]['type']]
+                if semantic_type:
+                    if pred not in gene_related[_item[5]]:
+                        gene_related[_item[5]][pred] = []
+                    assoc = _item[5] + pred + str(_item[1]) + _item[4]
+                    if assoc not in unique_assocs:
+                        unique_assocs.add(assoc)
+                        gene_related[_item[5]][pred].append({'pmid': _item[1].split(';'),
+                                                            'umls': _item[4][5:],
+                                                            'name': id_type_mapping[_item[4]]['name'],
+                                                            '@type': semantic_type})
     for v in gene_related.values():
         yield v

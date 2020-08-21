@@ -160,6 +160,8 @@ def load_data(data_folder):
         csv_reader = csv.reader(f, delimiter=',')
         next(csv_reader)
         for _item in csv_reader:
+            if _item[-2] == 'protein':
+                _item[-2] = 'gene'
             group_by_semmantic_dict[_item[-2]].append(_item[-1])
             id_type_mapping[_item[-1]] = {'type': _item[-2], 'name': _item[1]}
     gene_related = {}
